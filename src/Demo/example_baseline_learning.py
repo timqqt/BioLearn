@@ -8,14 +8,14 @@ sys.path.append('D:/桌面文件2/出国准备/Duke/BME503-Neuroc/Final_Project/
 from brian2 import *
 import numpy as np
 from models.snn_ReSuMe import SpikingNeuralNetwork
-from xor_dataset import *
+from convergable_datasets import *
 # The parameters are claimed in the data_and_paras
 
 trainer = SpikingNeuralNetwork(seed=1, nn_architecture=structure, input_type='spike_train')
 trainer.train_config(mode='no_bp',
                      eqs=eqs,
                      threshold=threshold,
-                     class_num=4,
+                     class_num=1,
                      refractory=4*ms,
                      reset=reset,
                      syn_eqs=syn_eqs,
@@ -28,18 +28,17 @@ trainer.train_config(mode='no_bp',
                      R=R)
 
 # Xor datasets
-trainer.train(input_data=[[input_indices_1, input_spike_train_1], [input_indices_2, input_spike_train_2],
-                          [input_indices_3, input_spike_train_3], [input_indices_4, input_spike_train_4]],
-              target=[targOut_1, targOut_2, targOut_3, targOut_4],
+trainer.train(input_data=[[input_indices, input_spike_train]],
+              target=[targOut1],
               interval=Tmax,
-              method='single_layer',
-              max_epochs=100, # epoch for each_layer
+              method='simultaneously_pattern_bp',
+              max_epochs=50, # epoch for each_layer
               learning_rate=1,
               decay_rate=1,
               decay_epoch=30,
               show_output=True,
-              save_weights=True)
-prediction = trainer.predict([[input_indices_1, input_spike_train_1], [input_indices_2, input_spike_train_2],
-                          [input_indices_3, input_spike_train_3], [input_indices_4, input_spike_train_4]])
-print('Test result: ', prediction)
-print('Predict Label: ', np.argmax(prediction, axis=0))
+              save_weights=False)
+# prediction = trainer.predict([[input_indices_1, input_spike_train_1], [input_indices_2, input_spike_train_2],
+#                           [input_indices_3, input_spike_train_3], [input_indices_4, input_spike_train_4]])
+# print('Test result: ', prediction)
+# print('Predict Label: ', np.argmax(prediction, axis=0))
